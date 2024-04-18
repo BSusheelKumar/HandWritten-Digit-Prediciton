@@ -36,7 +36,7 @@ class CNN(nn.Module):
         return x
     
 model = CNN()
-model = torch.load("/home/bsusheelkumar/MNIST/model.pth",map_location=torch.device('cpu'))
+model = torch.load("model.pth",map_location=torch.device('cpu'))
 # Define preprocessing transforms
 transform = transforms.Compose([
     transforms.Grayscale(num_output_channels=1),
