@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MNIST Digit Classifier</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            text-align: center;
+        }
+        #canvas {
+            border: 1px solid white;
+            display: block;
+            margin: 0 auto;
+        }
+        button {
+            display: block;
+            margin: 10px auto;
+            padding: 10px 20px;
+            background-color: white;
+            color: black;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var canvas = document.getElementById("canvas");
+            var ctx = canvas.getContext("2d");
+
+            var isDrawing = false;
+
+            canvas.addEventListener("mousedown", startDrawing);
+            canvas.addEventListener("mousemove", draw);
+            canvas.addEventListener("mouseup", stopDrawing);
+            canvas.addEventListener("mouseout", stopDrawing);
+
+            function startDrawing(e) {
+                isDrawing = true;
+                draw(e);
+            }
+
+            function draw(e) {
+                if (!isDrawing) return;
+                var rect = canvas.getBoundingClientRect();
+                var x = e.clientX - rect.left;
+                var y = e.clientY - rect.top;
+
+                ctx.fillStyle = "white";
+                ctx.beginPath();
+                ctx.arc(x, y, 8, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            function stopDrawing() {
+                isDrawing = false;
+            }
+
+            $("#clearBtn").click(function () {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            });
+
+            $("#predictBtn").click(function () {
+                var imageData = canvas.toDataURL();
+                imageData = imageData.replace(/^data:image\/(png|jpeg);base64,/, "");
+                $.ajax({
+                    type: "POST",
+                    url: "/predict",
+                    data: JSON.stringify({ "image": imageData }),
+                    contentType: "application/json",
+                    success: function (response) {
+                        alert("Predicted Digit: " + response.prediction);
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>MNIST Digit Classifier</h1>
+    <canvas id="canvas" width="280" height="280"></canvas>
+    <button id="predictBtn">Predict Digit</button>
+    <button id="clearBtn">Clear</button>
+</body>
+</html>
