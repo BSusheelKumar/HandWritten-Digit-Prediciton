@@ -1,6 +1,6 @@
 # CNN Model Report
 
-## Link For Project http://bsusheelkumar01.pythonanywhere.com/
+## Link For Testing the Project http://bsusheelkumar01.pythonanywhere.com/
 
 ## Overview
 
