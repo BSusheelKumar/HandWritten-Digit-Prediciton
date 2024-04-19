@@ -77,6 +77,10 @@ To further improve the model performance, the following strategies can be explor
 3. **Data Augmentation**: Apply augmentation techniques such as rotation, translation, and scaling to increase the diversity of training data and improve generalization.
 4. **Ensemble Learning**: Train multiple models with different initializations or architectures and combine their predictions to improve performance.
 
+## Deployment
+
+The trained model has been deployed using Flask framework. Frontend for the application was built with the help of ChatGPT. The deployment was done on PythonAnywhere platform.
+
 ## Conclusion
 
 In conclusion, the trained CNN model achieved a high accuracy on the MNIST dataset. By implementing the mentioned strategies for improvement, further enhancements in model performance can be achieved.
