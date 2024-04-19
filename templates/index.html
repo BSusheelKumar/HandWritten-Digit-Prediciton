@@ -27,6 +27,15 @@
             border: none;
             cursor: pointer;
         }
+        #prediction {
+            text-align: center;
+            font-size: 24px;
+            margin-top: 20px;
+        }
+        #description {
+            text-align: center;
+            margin-bottom: 20px;
+        }
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
@@ -40,6 +49,10 @@
             canvas.addEventListener("mousemove", draw);
             canvas.addEventListener("mouseup", stopDrawing);
             canvas.addEventListener("mouseout", stopDrawing);
+
+            canvas.addEventListener("touchstart", startDrawingTouch);
+            canvas.addEventListener("touchmove", drawTouch);
+            canvas.addEventListener("touchend", stopDrawing);
 
             function startDrawing(e) {
                 isDrawing = true;
@@ -58,12 +71,32 @@
                 ctx.fill();
             }
 
+            function startDrawingTouch(e) {
+                e.preventDefault();
+                isDrawing = true;
+                drawTouch(e);
+            }
+
+            function drawTouch(e) {
+                if (!isDrawing) return;
+                var rect = canvas.getBoundingClientRect();
+                var touch = e.touches[0];
+                var x = touch.clientX - rect.left;
+                var y = touch.clientY - rect.top;
+
+                ctx.fillStyle = "white";
+                ctx.beginPath();
+                ctx.arc(x, y, 8, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
             function stopDrawing() {
                 isDrawing = false;
             }
 
             $("#clearBtn").click(function () {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
+                $("#prediction").text(""); // Clear previous prediction
             });
 
             $("#predictBtn").click(function () {
@@ -75,7 +108,7 @@
                     data: JSON.stringify({ "image": imageData }),
                     contentType: "application/json",
                     success: function (response) {
-                        alert("Predicted Digit: " + response.prediction);
+                        $("#prediction").text("Predicted Digit: " + response.prediction);
                     }
                 });
             });
@@ -84,8 +117,10 @@
 </head>
 <body>
     <h1>MNIST Digit Classifier</h1>
+    <div id="description">Draw a digit in the box below to make a prediction:</div>
     <canvas id="canvas" width="280" height="280"></canvas>
     <button id="predictBtn">Predict Digit</button>
     <button id="clearBtn">Clear</button>
+    <div id="prediction"></div>
 </body>
 </html>
